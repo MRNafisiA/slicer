@@ -1,0 +1,2 @@
+# slicer
+Redux boilerplate
