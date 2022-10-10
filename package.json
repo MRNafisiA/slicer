@@ -1,5 +1,5 @@
 {
-  "name": "slicer",
+  "name": "@mrnafisia/slicer",
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc"
   },
-  "repository": "https://github.com/MRNafisiA/duxtore.git",
+  "repository": "https://github.com/MRNafisiA/slicer.git",
   "author": "MRNafisiA <mnafisiasl@gmail.com>",
   "license": "MIT",
   "dependencies": {
