@@ -26,17 +26,17 @@ const buildSimpleSlice = <State, Name extends string>(
         }
     }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
 
-const useSimpleSliceVariable = <State>(
-    slice: Slice<State, { set: CaseReducer<State, PayloadAction<State>> }>,
-    selector: (state: any) => State,
-    {
-        useSelector,
-        dispatch
-    }: {
-        useSelector: (selector: (rootState: any) => State) => State;
-        dispatch: Dispatch;
-    }
-) => {
+const useSimpleSliceVariable = <State>({
+    slice,
+    selector,
+    useSelector,
+    dispatch
+}: {
+    slice: Slice<State, { set: CaseReducer<State, PayloadAction<State>> }>;
+    selector: (state: any) => State;
+    useSelector: (selector: (rootState: any) => State) => State;
+    dispatch: Dispatch;
+}) => {
     const setter = useMemo<(value: Slice<State>['actions']['set']) => void>(
         () => value => {
             dispatch(slice.actions.set(value));
@@ -97,17 +97,17 @@ const getSliceSetters = <State extends Record<string, unknown>>(
         ])
     );
 
-const useSliceVariables = <State extends Record<string, unknown>>(
-    actions: ActionCreatorFromState<State>,
-    selector: (state: any) => State,
-    {
-        useAppSelector,
-        dispatch
-    }: {
-        useAppSelector: (selector: (rootState: any) => State) => State;
-        dispatch: Dispatch;
-    }
-): {
+const useSliceVariables = <State extends Record<string, unknown>>({
+    actions,
+    selector,
+    useAppSelector,
+    dispatch
+}: {
+    actions: ActionCreatorFromState<State>;
+    selector: (state: any) => State;
+    useAppSelector: (selector: (rootState: any) => State) => State;
+    dispatch: Dispatch;
+}): {
     [key in keyof State]: { v: State[key]; set: (v: State[key]) => void };
 } => {
     const state = useAppSelector(selector);
