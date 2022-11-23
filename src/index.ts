@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+    ActionCreatorWithPayload,
     CaseReducer,
     createSlice,
     Dispatch,
@@ -7,8 +8,8 @@ import {
     Slice
 } from '@reduxjs/toolkit';
 
-type SimpleCaseReducers<State extends Record<string, unknown>> = {
-    [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>>;
+type ActionCreatorFromState<State extends Record<string, unknown>> = {
+    [key in keyof State]: ActionCreatorWithPayload<State[key]>;
 };
 
 ////////////////////
@@ -48,6 +49,8 @@ const useSimpleSliceVariable = <State>(
     };
 };
 
+////////////////////
+
 const buildSlice = <State extends Record<string, unknown>, Name extends string>(
     name: Name,
     initialState: State | (() => State)
@@ -69,15 +72,16 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
                 }
             ])
         )
-    }) as Slice<State, SimpleCaseReducers<State>, Name>;
+    }) as Slice<
+        State,
+        {
+            [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>>;
+        },
+        Name
+    >;
 
-////////////////////
-
-const getSliceSetters = <
-    State extends Record<string, unknown>,
-    Name extends string
->(
-    actions: Slice<State, SimpleCaseReducers<State>, Name>['actions'],
+const getSliceSetters = <State extends Record<string, unknown>>(
+    actions: ActionCreatorFromState<State>,
     dispatch: Dispatch
 ): {
     [key in keyof Slice<State>['actions']]: (
@@ -93,11 +97,8 @@ const getSliceSetters = <
         ])
     );
 
-const useSliceVariables = <
-    State extends Record<string, unknown>,
-    Name extends string
->(
-    actions: Slice<State, SimpleCaseReducers<State>, Name>['actions'],
+const useSliceVariables = <State extends Record<string, unknown>>(
+    actions: ActionCreatorFromState<State>,
     selector: (state: any) => State,
     {
         useAppSelector,
@@ -122,6 +123,6 @@ const useSliceVariables = <
     ) as any;
 };
 
-export { buildSlice, useSliceVariables };
 export { buildSimpleSlice, useSimpleSliceVariable };
+export { buildSlice, useSliceVariables };
 export { getSliceSetters };
