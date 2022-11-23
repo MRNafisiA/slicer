@@ -1,74 +1,17 @@
-import {CaseReducer, createSlice, Dispatch, PayloadAction, Slice} from "@reduxjs/toolkit";
-import {useMemo} from "react";
+import { useMemo } from 'react';
+import {
+    CaseReducer,
+    createSlice,
+    Dispatch,
+    PayloadAction,
+    Slice
+} from '@reduxjs/toolkit';
 
-const buildSlice = <State extends Record<string, unknown>, Name extends string>(
-    name: Name,
-    initialState: State | (() => State)
-) =>
-    createSlice({
-        name,
-        initialState,
-        reducers: Object.fromEntries(
-            Object.keys(
-                typeof initialState === 'function'
-                    ? initialState()
-                    : initialState
-            ).map(key => [
-                key,
-                (state, {payload}) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    state[key] = payload;
-                }
-            ])
-        )
-    }) as Slice<State,
-        { [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>> },
-        Name>;
-
-const getSliceSetters = <State extends Record<string, unknown>>(
-    {actions}: Slice<State>,
-    dispatch: Dispatch
-): {
-    [key in keyof Slice<State>['actions']]: (
-        value: Slice<State>['actions'][key]
-    ) => void;
-} =>
-    Object.fromEntries(
-        Object.entries(actions).map(([key, action]) => [
-            key as unknown,
-            value => {
-                dispatch(action(value));
-            }
-        ])
-    );
-
-const useSliceVariables = <State extends Record<string, unknown>>(
-    slice: Slice<State>,
-    selector: (state: any) => State,
-    {
-        useAppSelector,
-        dispatch
-    }: {
-        useAppSelector: (selector: (rootState: any) => State) => State;
-        dispatch: Dispatch;
-    }
-): {
-    [key in keyof State]: { v: State[key]; set: (v: State[key]) => void };
-} => {
-    const state = useAppSelector(selector);
-    const setters = useMemo(
-        () => getSliceSetters(slice, dispatch),
-        [slice, dispatch]
-    );
-    return Object.fromEntries(
-        Object.entries(setters).map(([key, setter]) => [
-            key,
-            {v: state[key], set: setter}
-        ])
-    ) as any;
+type SimpleCaseReducers<State extends Record<string, unknown>> = {
+    [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>>;
 };
 
+////////////////////
 
 const buildSimpleSlice = <State, Name extends string>(
     name: Name,
@@ -78,7 +21,7 @@ const buildSimpleSlice = <State, Name extends string>(
         name,
         initialState,
         reducers: {
-            set: (_, {payload}) => payload
+            set: (_, { payload }) => payload
         }
     }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
 
@@ -105,13 +48,80 @@ const useSimpleSliceVariable = <State>(
     };
 };
 
-export {
-    buildSlice,
-    getSliceSetters,
-    useSliceVariables
-}
+const buildSlice = <State extends Record<string, unknown>, Name extends string>(
+    name: Name,
+    initialState: State | (() => State)
+) =>
+    createSlice({
+        name,
+        initialState,
+        reducers: Object.fromEntries(
+            Object.keys(
+                typeof initialState === 'function'
+                    ? initialState()
+                    : initialState
+            ).map(key => [
+                key,
+                (state, { payload }) => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    state[key] = payload;
+                }
+            ])
+        )
+    }) as Slice<State, SimpleCaseReducers<State>, Name>;
 
-export {
-    buildSimpleSlice,
-    useSimpleSliceVariable
-}
+////////////////////
+
+const getSliceSetters = <
+    State extends Record<string, unknown>,
+    Name extends string
+>(
+    actions: Slice<State, SimpleCaseReducers<State>, Name>['actions'],
+    dispatch: Dispatch
+): {
+    [key in keyof Slice<State>['actions']]: (
+        value: Slice<State>['actions'][key]
+    ) => void;
+} =>
+    Object.fromEntries(
+        Object.entries(actions).map(([key, action]) => [
+            key as unknown,
+            value => {
+                dispatch(action(value));
+            }
+        ])
+    );
+
+const useSliceVariables = <
+    State extends Record<string, unknown>,
+    Name extends string
+>(
+    actions: Slice<State, SimpleCaseReducers<State>, Name>['actions'],
+    selector: (state: any) => State,
+    {
+        useAppSelector,
+        dispatch
+    }: {
+        useAppSelector: (selector: (rootState: any) => State) => State;
+        dispatch: Dispatch;
+    }
+): {
+    [key in keyof State]: { v: State[key]; set: (v: State[key]) => void };
+} => {
+    const state = useAppSelector(selector);
+    const setters = useMemo(
+        () => getSliceSetters(actions, dispatch),
+        [actions, dispatch]
+    );
+    return Object.fromEntries(
+        Object.entries(setters).map(([key, setter]) => [
+            key,
+            { v: state[key], set: setter }
+        ])
+    ) as any;
+};
+
+export { buildSlice, useSliceVariables };
+export { buildSimpleSlice, useSimpleSliceVariable };
+export { getSliceSetters };
