@@ -16,6 +16,13 @@ type CaseReducerFromState<State extends Record<string, unknown>> = {
     [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>>;
 };
 
+type SliceVariablesRequirements<State extends Record<string, unknown>> = {
+    actions: ActionCreatorFromState<State>;
+    selector: (state: any) => State;
+    useAppSelector: (selector: (rootState: any) => State) => State;
+    dispatch: Dispatch;
+};
+
 const buildSlice = <State extends Record<string, unknown>, Name extends string>(
     name: Name,
     initialState: State | (() => State)
@@ -61,12 +68,7 @@ const useSliceVariables = <State extends Record<string, unknown>>({
     selector,
     useAppSelector,
     dispatch
-}: {
-    actions: ActionCreatorFromState<State>;
-    selector: (state: any) => State;
-    useAppSelector: (selector: (rootState: any) => State) => State;
-    dispatch: Dispatch;
-}): {
+}: SliceVariablesRequirements<State>): {
     [key in keyof State]: { v: State[key]; set: (v: State[key]) => void };
 } => {
     const state = useAppSelector(selector);
@@ -82,5 +84,9 @@ const useSliceVariables = <State extends Record<string, unknown>>({
     ) as any;
 };
 
-export type { ActionCreatorFromState, CaseReducerFromState };
+export type {
+    ActionCreatorFromState,
+    CaseReducerFromState,
+    SliceVariablesRequirements
+};
 export { buildSlice, getSliceSetters, useSliceVariables };

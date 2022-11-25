@@ -2,7 +2,8 @@ export { buildSimpleSlice, useSimpleSliceVariable } from './buildSimpleSlice';
 
 export type {
     ActionCreatorFromState,
-    CaseReducerFromState
+    CaseReducerFromState,
+    SliceVariablesRequirements
 } from './buildSlice';
 export { buildSlice, getSliceSetters, useSliceVariables } from './buildSlice';
 
