@@ -3,7 +3,7 @@ export { buildSimpleSlice, useSimpleSliceVariable } from './buildSimpleSlice';
 export type {
     ActionCreatorFromState,
     CaseReducerFromState,
-    SliceVariablesRequirements
+    VariableMaterials
 } from './buildSlice';
 export { buildSlice, getSliceSetters, useSliceVariables } from './buildSlice';
 
