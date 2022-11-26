@@ -1,10 +1,10 @@
 import { createSlice, Slice } from '@reduxjs/toolkit';
 
 type CombinedSlice<
-    State extends Record<string, unknown> = Record<string, unknown>
+    State extends Record<string, unknown> = any
 > = {
     rootSlice: Slice<State>;
-    subSlices: Slice | CombinedSlice;
+    subSlices: { [key: string]: Slice | CombinedSlice };
 };
 
 type AggregateBuildSlices<
