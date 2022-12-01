@@ -1,11 +1,16 @@
-export { buildSimpleSlice, useSimpleSliceVariable } from './buildSimpleSlice';
+export { isCombinedSlice } from './buildSlice';
+export { buildSimpleSlice, buildSlice, combineBuildSlices } from './buildSlice';
+
+export { buildSliceMap, buildCombinedSliceMap } from './buildSliceMap';
 
 export type {
-    ActionCreatorFromState,
     CaseReducerFromState,
-    VariableMaterials
-} from './buildSlice';
-export { buildSlice, getSliceSetters, useSliceVariables } from './buildSlice';
-
-export type { CombinedSlice, AggregateBuildSlices } from './combineBuildSlices';
-export { isCombinedSlice, combineBuildSlices } from './combineBuildSlices';
+    CombinedSlice,
+    AggregateBuildSlices,
+    VariableMaterials,
+    CombinedVariableMaterials,
+    SliceMapState,
+    GetStateFromSlice,
+    GetStateFromCombinedSlice,
+    GetStateFromSliceOrCombinedSlice
+} from './types';

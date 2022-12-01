@@ -1,27 +1,22 @@
 {
-  "name": "@mrnafisia/slicer",
-  "version": "0.0.10",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc"
-  },
-  "repository": "https://github.com/MRNafisiA/slicer.git",
-  "author": "MRNafisiA <mnafisiasl@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.8.3"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.25",
-    "prettier": "^2.8.0",
-    "react": "^18.2.0",
-    "typescript": "^4.7.4"
-  }
+    "name": "@mrnafisia/slicer",
+    "version": "0.0.11",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc"
+    },
+    "repository": "https://github.com/MRNafisiA/slicer.git",
+    "author": "MRNafisiA <mnafisiasl@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.8.3"
+    },
+    "devDependencies": {
+        "prettier": "^2.8.0",
+        "typescript": "^4.7.4"
+    }
 }

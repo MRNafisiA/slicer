@@ -1,28 +1,31 @@
-import { useMemo } from 'react';
 import {
-    ActionCreatorWithPayload,
+  AggregateBuildSlices,
+  CaseReducerFromState,
+  CombinedSlice
+} from './types';
+import {
+    Slice,
     CaseReducer,
     createSlice,
-    Dispatch,
-    PayloadAction,
-    Slice
+    PayloadAction
 } from '@reduxjs/toolkit';
 
-type ActionCreatorFromState<State extends Record<string, unknown>> = {
-    [key in keyof State]: ActionCreatorWithPayload<State[key]>;
-};
+const isCombinedSlice = (
+    sliceOrCombinedSlice: Slice | CombinedSlice
+): sliceOrCombinedSlice is CombinedSlice =>
+    (sliceOrCombinedSlice as CombinedSlice).rootSlice !== undefined;
 
-type CaseReducerFromState<State extends Record<string, unknown>> = {
-    [key in keyof State]: CaseReducer<State, PayloadAction<State[key]>>;
-};
-
-type VariableMaterials<State extends Record<string, unknown>> = {
-    actions: ActionCreatorFromState<State>;
-    selector: (state: any) => State;
-    useAppSelector: (selector: (rootState: any) => State) => State;
-    dispatch: Dispatch;
-};
-
+const buildSimpleSlice = <State, Name extends string>(
+    name: Name,
+    initialState: State | (() => State)
+) =>
+    createSlice({
+        name,
+        initialState,
+        reducers: {
+            set: (_, { payload }) => payload
+        }
+    }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
 const buildSlice = <State extends Record<string, unknown>, Name extends string>(
     name: Name,
     initialState: State | (() => State)
@@ -45,48 +48,60 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
             ])
         )
     }) as Slice<State, CaseReducerFromState<State>, Name>;
-
-const getSliceSetters = <State extends Record<string, unknown>>(
-    actions: ActionCreatorFromState<State>,
-    dispatch: Dispatch
+const combineBuildSlices = <
+    BuildSlices extends {
+        [key: string]: (name: string) => Slice | CombinedSlice;
+    }
+>(
+    name: string,
+    buildSlices: BuildSlices
 ): {
-    [key in keyof Slice<State>['actions']]: (
-        value: Slice<State>['actions'][key]
-    ) => void;
-} =>
-    Object.fromEntries(
-        Object.entries(actions).map(([key, action]) => [
-            key as unknown,
-            value => {
-                dispatch(action(value));
-            }
-        ])
-    );
-
-const useSliceVariables = <State extends Record<string, unknown>>({
-    actions,
-    selector,
-    useAppSelector,
-    dispatch
-}: VariableMaterials<State>): {
-    [key in keyof State]: { v: State[key]; set: (v: State[key]) => void };
+    rootSlice: Slice<AggregateBuildSlices<BuildSlices>>;
+    subSlices: {
+        [key in keyof BuildSlices]: ReturnType<BuildSlices[key]>;
+    };
 } => {
-    const state = useAppSelector(selector);
-    const setters = useMemo(
-        () => getSliceSetters(actions, dispatch),
-        [actions, dispatch]
-    );
-    return Object.fromEntries(
-        Object.entries(setters).map(([key, setter]) => [
+    const subSlices = Object.fromEntries(
+        Object.entries(buildSlices).map(([key, buildSlice]) => [
             key,
-            { v: state[key], set: setter }
+            buildSlice(`${name}/${key}`)
         ])
-    ) as any;
+    ) as {
+        [key in keyof BuildSlices]: ReturnType<BuildSlices[key]>;
+    };
+    const rootSlice = createSlice({
+        name,
+        initialState: Object.fromEntries(
+            Object.entries(subSlices).map(([key, slice]) => [
+                key,
+                (isCombinedSlice(slice)
+                    ? slice.rootSlice
+                    : slice
+                ).getInitialState()
+            ])
+        ) as AggregateBuildSlices<BuildSlices>,
+        reducers: {},
+        extraReducers: builder => {
+            for (const key in subSlices) {
+                builder.addMatcher(
+                    ({ type }) => type.startsWith(`${name}/${key}`),
+                    (state, action) => {
+                        const slice = subSlices[key];
+                        (isCombinedSlice(slice)
+                            ? slice.rootSlice.reducer
+                            : slice.reducer)(
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            state[key],
+                            action
+                        );
+                    }
+                );
+            }
+        }
+    });
+    return { rootSlice, subSlices };
 };
 
-export type {
-    ActionCreatorFromState,
-    CaseReducerFromState,
-    VariableMaterials
-};
-export { buildSlice, getSliceSetters, useSliceVariables };
+export { isCombinedSlice };
+export { buildSimpleSlice, buildSlice, combineBuildSlices };
