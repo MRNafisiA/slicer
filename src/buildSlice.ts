@@ -1,7 +1,7 @@
 import {
-  AggregateBuildSlices,
-  CaseReducerFromState,
-  CombinedSlice
+    AggregateBuildSlices,
+    CaseReducerFromState,
+    CombinedSlice
 } from './types';
 import {
     Slice,
