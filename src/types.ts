@@ -5,7 +5,7 @@ type CaseReducerFromState<State extends Record<string, unknown>> = {
 };
 type CombinedSlice<State extends Record<string, unknown> = any> = {
     rootSlice: Slice<State>;
-    subSlices: { [key: string]: Slice | CombinedSlice };
+    subSlices: { [key: string]: Slice | CombinedSlice | SliceMap };
 };
 type SliceMap<State extends Record<string, unknown> = any> = {
     slice: Slice<SliceMapState<State>>;
@@ -30,16 +30,12 @@ type SliceMap<State extends Record<string, unknown> = any> = {
 };
 type AggregateBuildSlices<
     BuildSlices extends {
-        [key: string]: (name: string) => Slice | CombinedSlice;
+        [key: string]: (name: string) => Slice | CombinedSlice | SliceMap;
     }
 > = {
-    [key in keyof BuildSlices]: ReturnType<BuildSlices[key]> extends Slice<
-        infer U
-    >
-        ? U
-        : ReturnType<BuildSlices[key]> extends CombinedSlice<infer U>
-        ? U
-        : never;
+    [key in keyof BuildSlices]: GetStateFromSliceOrCombinedSliceOrSliceMap<
+        ReturnType<BuildSlices[key]>
+    >;
 };
 type VariableMaterials<S extends Slice> = {
     actions: S['actions'];

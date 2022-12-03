@@ -55,7 +55,7 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
     }) as Slice<State, CaseReducerFromState<State>, Name>;
 const combineBuildSlices = <
     BuildSlices extends {
-        [key: string]: (name: string) => Slice | CombinedSlice;
+        [key: string]: (name: string) => Slice | CombinedSlice | SliceMap;
     }
 >(
     name: string,
@@ -77,11 +77,13 @@ const combineBuildSlices = <
     const rootSlice = createSlice({
         name,
         initialState: Object.fromEntries(
-            Object.entries(subSlices).map(([key, slice]) => [
+            Object.entries(subSlices).map(([key, baseSlice]) => [
                 key,
-                (isCombinedSlice(slice)
-                    ? slice.rootSlice
-                    : slice
+                (isCombinedSlice(baseSlice)
+                    ? baseSlice.rootSlice
+                    : isSliceMap(baseSlice)
+                    ? baseSlice.slice
+                    : baseSlice
                 ).getInitialState()
             ])
         ) as AggregateBuildSlices<BuildSlices>,
@@ -91,10 +93,12 @@ const combineBuildSlices = <
                 builder.addMatcher(
                     ({ type }) => type.startsWith(`${name}/${key}`),
                     (state, action) => {
-                        const slice = subSlices[key];
-                        (isCombinedSlice(slice)
-                            ? slice.rootSlice.reducer
-                            : slice.reducer)(
+                        const baseSlice = subSlices[key];
+                        (isCombinedSlice(baseSlice)
+                            ? baseSlice.rootSlice.reducer
+                            : isSliceMap(baseSlice)
+                            ? baseSlice.slice.reducer
+                            : baseSlice.reducer)(
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore
                             state[key],
