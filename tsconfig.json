@@ -1,10 +1,9 @@
 {
-    "include": [ "./src" ],
-    "exclude": [ "./node_modules", "./dist", "./tests" ],
+    "include": ["./src"],
+    "exclude": ["./node_modules", "./dist", "./tests"],
     "compilerOptions": {
-
         /* Type Checking */
-        "strict": true,                                         /* Enable all strict type-checking options. */
+        "strict": true /* Enable all strict type-checking options. */,
         //  "alwaysStrict": true,                               /* Ensure 'use strict' is always emitted. */
         //  "noImplicitAny": true,                              /* Enable error reporting for expressions and declarations with an implied 'any' type. */
         //  "noImplicitThis": true,                             /* Enable error reporting when 'this' is given the type 'any'. */
@@ -13,11 +12,11 @@
         //  "strictFunctionTypes": true,                        /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
         //  "strictPropertyInitialization": true,               /* Check for class properties that are declared but not set in the constructor. */
         //  "useUnknownInCatchVariables": true,                 /* Default catch clause variables as 'unknown' instead of 'any'. */
-        "noUnusedLocals": true,                                 /* Enable error reporting when local variables aren't read. */
-        "noImplicitReturns": true,                              /* Enable error reporting for codepaths that do not explicitly return in a function. */
-        "noUnusedParameters": true,                             /* Raise an error when a function parameter isn't read. */
-        "noImplicitOverride": true,                             /* Ensure overriding members in derived classes are marked with an override modifier. */
-        "noFallthroughCasesInSwitch": true,                     /* Enable error reporting for fallthrough cases in switch statements. */
+        "noUnusedLocals": true /* Enable error reporting when local variables aren't read. */,
+        "noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
+        "noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
+        "noImplicitOverride": true /* Ensure overriding members in derived classes are marked with an override modifier. */,
+        "noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */,
         //  "allowUnusedLabels": false,                         /* Disable error reporting for unused labels. */
         //  "allowUnreachableCode": false,                      /* Disable error reporting for unreachable code. */
         //  "noUncheckedIndexedAccess": false,                  /* Add 'undefined' to a type when accessed using an index. */
@@ -25,11 +24,11 @@
         //  "noPropertyAccessFromIndexSignature": false,        /* Enforces using indexed accessors for keys declared using an indexed type. */
 
         /* Modules */
-        "module": "ES2022",                                     /* Specify what module code is generated. */
-        "moduleResolution": "node",                             /* Specify how TypeScript looks up a file from a given module specifier. */
-        "allowUmdGlobalAccess": true,                           /* Allow accessing UMD globals from modules. */
-        "resolveJsonModule": true,                              /* Enable importing .json files. */
-        "rootDir": "./src",                                     /* Specify the root folder within your source files. */
+        "module": "ES2022" /* Specify what module code is generated. */,
+        "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
+        "allowUmdGlobalAccess": true /* Allow accessing UMD globals from modules. */,
+        "resolveJsonModule": true /* Enable importing .json files. */,
+        "rootDir": "./src" /* Specify the root folder within your source files. */,
         //  "noResolve": false,                                 /* Disallow 'import's, 'require's or '<reference>'s from expanding the number of files TypeScript should add to a project. */
         //  "baseUrl": "",                                      /* Specify the base directory to resolve non-relative module names. */
         //  "paths": {},                                        /* Specify a set of entries that re-map imports to additional lookup locations. */
@@ -38,10 +37,10 @@
         //  "typeRoots": [],                                    /* Specify multiple folders that act like './node_modules/@types'. */
 
         /* Emit */
-        "declaration": true,                                    /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
-        "declarationMap": true,                                 /* Create sourcemaps for d.ts files. */
-        "outDir": "dist",                                       /* Specify an output folder for all emitted files. */
-        "sourceMap": true,                                      /* Create source map files for emitted JavaScript files. */
+        "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
+        "declarationMap": true /* Create sourcemaps for d.ts files. */,
+        "outDir": "dist" /* Specify an output folder for all emitted files. */,
+        "sourceMap": true /* Create source map files for emitted JavaScript files. */,
         //  "noEmit": false,                                    /* Disable emitting files from a compilation. */
         //  "emitBOM": false,                                   /* Emit a UTF-8 Byte Order Mark (BOM) in the beginning of output files. */
         //  "importHelpers": false,                             /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
@@ -63,19 +62,19 @@
         //  "newLine": "crlf | lf",                             /* Set the newline character for emitting files. */
 
         /* JavaScript Support */
-        "allowJs": true,                                        /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
-        "checkJs": true,                                        /* Enable error reporting in type-checked JavaScript files. */
+        "allowJs": true /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */,
+        "checkJs": true /* Enable error reporting in type-checked JavaScript files. */,
         //  "maxNodeModuleJsDepth": 0,                          /* Specify the maximum folder depth used for checking JavaScript files from 'node_modules'. Only applicable with 'allowJs'. */
 
         /* Editor Support */
-        "disableSizeLimit": true,                               /* Remove the 20mb cap on total source code size for JavaScript files in the TypeScript language server. */
+        "disableSizeLimit": true /* Remove the 20mb cap on total source code size for JavaScript files in the TypeScript language server. */,
         //  "plugins":  [],                                     /* Specify a list of language service plugins to include. */
 
         /* Interop Constraints */
-        "isolatedModules": true,                                /* Ensure that each file can be safely transpiled without relying on other imports. */
-        "esModuleInterop": false,                               /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-        "allowSyntheticDefaultImports": true,                   /* Allow 'import x from y' when a module doesn't have a default export. */
-        "forceConsistentCasingInFileNames": true,               /* Ensure that casing is correct in imports. */
+        "isolatedModules": true /* Ensure that each file can be safely transpiled without relying on other imports. */,
+        "esModuleInterop": false /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+        "allowSyntheticDefaultImports": true /* Allow 'import x from y' when a module doesn't have a default export. */,
+        "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
         //  "preserveSymlinks": false,                          /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
 
         /* Backwards Compatibility */
@@ -85,13 +84,17 @@
         //  "suppressImplicitAnyIndexErrors": false,            /* Suppress `noImplicitAny` errors when indexing objects that lack index signatures. */
 
         /* Language and Environment */
-        "target": "ES5",                                        /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-        "lib": [ "DOM", "DOM.Iterable", "ES2021" ],             /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+        "target": "ES5" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2021"
+        ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
         //  "noLib": false,                                     /* Disable including any library files, including the default lib.d.ts. */
         //  "emitDecoratorMetadata": false,                     /* Emit design-type metadata for decorated declarations in source files. */
         //  "experimentalDecorators": false,                    /* Enable experimental support for TC39 stage 2 draft decorators. */
-        "useDefineForClassFields": true,                        /* Emit ECMAScript-standard-compliant class fields. */
-        "jsx": "react-jsx",                                     /* Specify what JSX code is generated. */
+        "useDefineForClassFields": true /* Emit ECMAScript-standard-compliant class fields. */,
+        "jsx": "react-jsx" /* Specify what JSX code is generated. */,
         //  "jsxFragmentFactory": "",                           /* Specify the JSX Fragment reference used for fragments when targeting React JSX emit e.g. 'React.Fragment' or 'Fragment'. */
         //  "reactNamespace": "React",                          /* Specify the object invoked for 'createElement'. This only applies when targeting 'react' JSX emit. */
         //  "jsxImportSource": "react",                         /* Specify module specifier used to import the JSX factory functions when using 'jsx: react-jsx*'. */
@@ -107,7 +110,7 @@
 
         /* Projects */
         //  "incremental": false,                               /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
-        "composite": true,                                      /* Enable constraints that allow a TypeScript project to be used with project references. */
+        "composite": true /* Enable constraints that allow a TypeScript project to be used with project references. */,
         //  "tsBuildInfoFile": "",                              /* Specify the path to .tsbuildinfo incremental compilation file. */
         //  "disableSourceOfProjectReferenceRedirect": false,   /* Disable preferring source files instead of declaration files when referencing composite projects. */
         //  "disableSolutionSearching": false,                  /* Opt a project out of multi-project reference checking when editing. */
@@ -119,9 +122,9 @@
         //  "pretty": true,                                     /* Enable color and formatting in output to make compiler errors easier to read. */
 
         /* Completeness */
-        "skipLibCheck": true,                                   /* Skip type checking all .d.ts files. */
+        "skipLibCheck": true /* Skip type checking all .d.ts files. */,
 
         /* Watch Options */
-        "assumeChangesOnlyAffectDirectDependencies": true       /* Have recompiles in '--incremental' and '--watch' assume that changes within a file will only affect files directly depending on it. Requires TypeScript version 3.8 or later. */
+        "assumeChangesOnlyAffectDirectDependencies": true /* Have recompiles in '--incremental' and '--watch' assume that changes within a file will only affect files directly depending on it. Requires TypeScript version 3.8 or later. */
     }
 }
