@@ -1,7 +1,8 @@
 import {
-  AggregateBuildSlices,
-  CaseReducerFromState,
-  CombinedSlice
+    AggregateBuildSlices,
+    CaseReducerFromState,
+    CombinedSlice,
+    SliceMap
 } from './types';
 import {
     Slice,
@@ -11,9 +12,13 @@ import {
 } from '@reduxjs/toolkit';
 
 const isCombinedSlice = (
-    sliceOrCombinedSlice: Slice | CombinedSlice
-): sliceOrCombinedSlice is CombinedSlice =>
-    (sliceOrCombinedSlice as CombinedSlice).rootSlice !== undefined;
+    sliceOrCombinedSliceOrSliceMap: Slice | CombinedSlice | SliceMap
+): sliceOrCombinedSliceOrSliceMap is CombinedSlice =>
+    (sliceOrCombinedSliceOrSliceMap as CombinedSlice).rootSlice !== undefined;
+const isSliceMap = (
+    sliceOrCombinedSliceOrSliceMap: Slice | CombinedSlice | SliceMap
+): sliceOrCombinedSliceOrSliceMap is SliceMap =>
+    (sliceOrCombinedSliceOrSliceMap as SliceMap).slice !== undefined;
 
 const buildSimpleSlice = <State, Name extends string>(
     name: Name,
@@ -103,5 +108,5 @@ const combineBuildSlices = <
     return { rootSlice, subSlices };
 };
 
-export { isCombinedSlice };
+export { isCombinedSlice, isSliceMap };
 export { buildSimpleSlice, buildSlice, combineBuildSlices };
