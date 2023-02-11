@@ -1,5 +1,5 @@
-import { isCombinedSlice, isSliceMap } from './buildSlice';
-import { createSlice, Dispatch, PayloadAction, Slice } from '@reduxjs/toolkit';
+import {isCombinedSlice, isSliceMap} from './buildSlice';
+import {createSlice, Dispatch, PayloadAction, Slice} from '@reduxjs/toolkit';
 import {
     CombinedSlice,
     CombinedVariableMaterials,
@@ -19,10 +19,10 @@ type GetVariableMaterialsFunc<S extends Slice | CombinedSlice | SliceMap> = (
 ) => S extends Slice
     ? VariableMaterials<S>
     : S extends CombinedSlice
-    ? CombinedVariableMaterials<S>
-    : S extends SliceMap
-    ? MapVariableMaterials<S>
-    : never;
+        ? CombinedVariableMaterials<S>
+        : S extends SliceMap
+            ? MapVariableMaterials<S>
+            : never;
 
 const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
     name: string,
@@ -32,28 +32,29 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
         GetStateFromSliceOrCombinedSliceOrSliceMap<S>
     > = {}
 ) => {
-    const baseSlice = buildSlice(name + '[MAPPED]');
+    const sliceName = name + '[MAPPED]';
+    const baseSlice = buildSlice(sliceName);
     const rootSlice = (
         isCombinedSlice(baseSlice)
             ? baseSlice.rootSlice
             : isSliceMap(baseSlice)
-            ? baseSlice.slice
-            : baseSlice
+                ? baseSlice.slice
+                : baseSlice
     ) as S extends Slice
         ? S
         : S extends CombinedSlice
-        ? S['rootSlice']
-        : S extends SliceMap
-        ? S['slice']
-        : never;
+            ? S['rootSlice']
+            : S extends SliceMap
+                ? S['slice']
+                : never;
     const slice = createSlice({
-        name: name + '[MAPPED]',
-        initialState: { order: Object.keys(initialState), map: initialState },
+        name: sliceName,
+        initialState: {order: Object.keys(initialState), map: initialState},
         reducers: {
             add: (
                 state,
                 {
-                    payload: { id, initialState = rootSlice.getInitialState() }
+                    payload: {id, initialState = rootSlice.getInitialState()}
                 }: PayloadAction<{
                     id: string;
                     initialState?: GetStateFromSliceOrCombinedSliceOrSliceMap<S>;
@@ -64,11 +65,11 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     state.order.push(id);
                 }
             },
-            remove: (state, { payload: id }: PayloadAction<string>) => {
+            remove: (state, {payload: id}: PayloadAction<string>) => {
                 delete state.map[id];
                 state.order.splice(state.order.indexOf(id), 1);
             },
-            keep: (state, { payload: ids }: PayloadAction<string[]>) => {
+            keep: (state, {payload: ids}: PayloadAction<string[]>) => {
                 const removingIDs = Object.keys(state).filter(
                     v => !ids.includes(v)
                 );
@@ -77,13 +78,13 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                 }
                 state.order = state.order.filter(v => !removingIDs.includes(v));
             },
-            setOrder: (state, { payload: ids }: PayloadAction<string[]>) => {
+            setOrder: (state, {payload: ids}: PayloadAction<string[]>) => {
                 state.order = ids;
             }
         },
         extraReducers: builder =>
             builder.addMatcher(
-                action => action.type.startsWith(name + '[MAPPED]'),
+                action => action.type.startsWith(sliceName),
                 (state, action) => {
                     rootSlice.reducer(state.map[action.payload.id] as any, {
                         type: action.type,
@@ -98,11 +99,16 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             slice,
             getVariableMaterials: ((dispatch, selector, id) => ({
                 slices: baseSlice,
-                dispatch: action =>
-                    dispatch({
-                        type: action.type,
-                        payload: { id, data: action.payload }
-                    }),
+                dispatch: action => {
+                    if (action.type.startsWith(sliceName + '/')) {
+                        dispatch({
+                            type: action.type,
+                            payload: {id, data: action.payload}
+                        })
+                    } else {
+                        dispatch(action);
+                    }
+                },
                 selector: state => selector(state).map[id]
             })) as GetVariableMaterialsFunc<S>
         };
@@ -111,11 +117,16 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             slice,
             getVariableMaterials: ((dispatch, selector, id) => ({
                 sliceMap: baseSlice,
-                dispatch: action =>
-                    dispatch({
-                        type: action.type,
-                        payload: { id, data: action.payload }
-                    }),
+                dispatch: action => {
+                    if (action.type.startsWith(sliceName + '/')) {
+                        dispatch({
+                            type: action.type,
+                            payload: {id, data: action.payload}
+                        })
+                    } else {
+                        dispatch(action);
+                    }
+                },
                 selector: state => selector(state).map[id] as SliceMapState<any>
             })) as GetVariableMaterialsFunc<S>
         };
@@ -124,15 +135,20 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             slice,
             getVariableMaterials: ((dispatch, selector, id) => ({
                 actions: baseSlice.actions,
-                dispatch: action =>
-                    dispatch({
-                        type: action.type,
-                        payload: { id, data: action.payload }
-                    }),
+                dispatch: action => {
+                    if (action.type.startsWith(sliceName + '/')) {
+                        dispatch({
+                            type: action.type,
+                            payload: {id, data: action.payload}
+                        })
+                    } else {
+                        dispatch(action);
+                    }
+                },
                 selector: state => selector(state).map[id]
             })) as GetVariableMaterialsFunc<S>
         };
     }
 };
 
-export { buildSliceMap };
+export {buildSliceMap};
