@@ -86,13 +86,10 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             builder.addMatcher(
                 action => action.type.startsWith(sliceName),
                 (state, action) => {
-                    const response = rootSlice.reducer(state.map[action.payload.id] as any, {
+                    rootSlice.reducer(state.map[action.payload.id] as any, {
                         type: action.type,
                         payload: action.payload.data
                     });
-                    if (response !== undefined) {
-                        return response;
-                    }
                 }
             )
     });

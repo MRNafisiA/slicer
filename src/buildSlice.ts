@@ -94,7 +94,7 @@ const combineBuildSlices = <
                     ({ type }) => type.startsWith(`${name}/${key}`),
                     (state, action) => {
                         const baseSlice = subSlices[key];
-                        const response = (isCombinedSlice(baseSlice)
+                        (isCombinedSlice(baseSlice)
                             ? baseSlice.rootSlice.reducer
                             : isSliceMap(baseSlice)
                                 ? baseSlice.slice.reducer
@@ -104,9 +104,6 @@ const combineBuildSlices = <
                             state[key],
                             action
                         );
-                        if (response !== undefined) {
-                            return response;
-                        }
                     }
                 );
             }
