@@ -1,5 +1,5 @@
-import {isCombinedSlice, isSliceMap} from './buildSlice';
-import {createSlice, Dispatch, PayloadAction, Slice} from '@reduxjs/toolkit';
+import { isCombinedSlice, isSliceMap } from './buildSlice';
+import { createSlice, Dispatch, PayloadAction, Slice } from '@reduxjs/toolkit';
 import {
     CombinedSlice,
     CombinedVariableMaterials,
@@ -49,12 +49,12 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                 : never;
     const slice = createSlice({
         name: sliceName,
-        initialState: {order: Object.keys(initialState), map: initialState},
+        initialState: { order: Object.keys(initialState), map: initialState },
         reducers: {
             add: (
                 state,
                 {
-                    payload: {id, initialState = rootSlice.getInitialState()}
+                    payload: { id, initialState = rootSlice.getInitialState() }
                 }: PayloadAction<{
                     id: string;
                     initialState?: GetStateFromSliceOrCombinedSliceOrSliceMap<S>;
@@ -65,11 +65,11 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     state.order.push(id);
                 }
             },
-            remove: (state, {payload: id}: PayloadAction<string>) => {
+            remove: (state, { payload: id }: PayloadAction<string>) => {
                 delete state.map[id];
                 state.order.splice(state.order.indexOf(id), 1);
             },
-            keep: (state, {payload: ids}: PayloadAction<string[]>) => {
+            keep: (state, { payload: ids }: PayloadAction<string[]>) => {
                 const removingIDs = Object.keys(state).filter(
                     v => !ids.includes(v)
                 );
@@ -78,7 +78,7 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                 }
                 state.order = state.order.filter(v => !removingIDs.includes(v));
             },
-            setOrder: (state, {payload: ids}: PayloadAction<string[]>) => {
+            setOrder: (state, { payload: ids }: PayloadAction<string[]>) => {
                 state.order = ids;
             }
         },
@@ -86,10 +86,13 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             builder.addMatcher(
                 action => action.type.startsWith(sliceName),
                 (state, action) => {
-                    rootSlice.reducer(state.map[action.payload.id] as any, {
+                    const response = rootSlice.reducer(state.map[action.payload.id] as any, {
                         type: action.type,
                         payload: action.payload.data
                     });
+                    if (response !== undefined) {
+                        return response;
+                    }
                 }
             )
     });
@@ -103,8 +106,8 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     if (action.type.startsWith(sliceName + '/')) {
                         dispatch({
                             type: action.type,
-                            payload: {id, data: action.payload}
-                        })
+                            payload: { id, data: action.payload }
+                        });
                     } else {
                         dispatch(action);
                     }
@@ -121,8 +124,8 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     if (action.type.startsWith(sliceName + '/')) {
                         dispatch({
                             type: action.type,
-                            payload: {id, data: action.payload}
-                        })
+                            payload: { id, data: action.payload }
+                        });
                     } else {
                         dispatch(action);
                     }
@@ -139,8 +142,8 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     if (action.type.startsWith(sliceName + '/')) {
                         dispatch({
                             type: action.type,
-                            payload: {id, data: action.payload}
-                        })
+                            payload: { id, data: action.payload }
+                        });
                     } else {
                         dispatch(action);
                     }
@@ -151,4 +154,4 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
     }
 };
 
-export {buildSliceMap};
+export { buildSliceMap };

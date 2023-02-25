@@ -80,10 +80,10 @@ const combineBuildSlices = <
             Object.entries(subSlices).map(([key, baseSlice]) => [
                 key,
                 (isCombinedSlice(baseSlice)
-                    ? baseSlice.rootSlice
-                    : isSliceMap(baseSlice)
-                    ? baseSlice.slice
-                    : baseSlice
+                        ? baseSlice.rootSlice
+                        : isSliceMap(baseSlice)
+                            ? baseSlice.slice
+                            : baseSlice
                 ).getInitialState()
             ])
         ) as AggregateBuildSlices<BuildSlices>,
@@ -94,16 +94,19 @@ const combineBuildSlices = <
                     ({ type }) => type.startsWith(`${name}/${key}`),
                     (state, action) => {
                         const baseSlice = subSlices[key];
-                        (isCombinedSlice(baseSlice)
+                        const response = (isCombinedSlice(baseSlice)
                             ? baseSlice.rootSlice.reducer
                             : isSliceMap(baseSlice)
-                            ? baseSlice.slice.reducer
-                            : baseSlice.reducer)(
+                                ? baseSlice.slice.reducer
+                                : baseSlice.reducer)(
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore
                             state[key],
                             action
                         );
+                        if (response !== undefined) {
+                            return response;
+                        }
                     }
                 );
             }

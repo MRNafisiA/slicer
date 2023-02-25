@@ -1,6 +1,6 @@
 {
     "name": "@mrnafisia/slicer",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
@@ -14,9 +14,6 @@
     "license": "MIT",
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3"
-    },
-    "peerDependencies": {
-        "immer": "9.0.16"
     },
     "devDependencies": {
         "prettier": "^2.8.0",
