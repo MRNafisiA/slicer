@@ -91,7 +91,7 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                         payload: action.payload.data
                     });
 
-                    if (process.env.NODE_ENV !== 'production') {
+                    if (!(import.meta as any).env.PROD) {
                         console.log(`sliceMap\t ${name}`);
                         console.log(response);
                     }
