@@ -30,7 +30,8 @@ const buildSimpleSlice = <State, Name extends string>(
         reducers: {
             set: (_, { payload }) => {
                 if (process.env.NODE_ENV !== 'production') {
-                    console.log(`simpleSlice(${name}) -> ${JSON.stringify(payload)}`);
+                    console.log(`simpleSlice\t\t ${name}`);
+                    console.log(payload);
                 }
                 return payload;
             }
@@ -111,7 +112,8 @@ const combineBuildSlices = <
                         );
 
                         if (process.env.NODE_ENV !== 'production') {
-                            console.log(`combinedSlice(${name}) -> ${JSON.stringify(response)}`);
+                            console.log(`combinedSlice\t\t ${name}`);
+                            console.log(response);
                         }
                         return response;
                     }

@@ -92,7 +92,8 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                     });
 
                     if (process.env.NODE_ENV !== 'production') {
-                        console.log(`sliceMap(${name}) -> ${JSON.stringify(response)}`);
+                        console.log(`sliceMap\t ${name}`);
+                        console.log(response);
                     }
                     return response;
                 }
