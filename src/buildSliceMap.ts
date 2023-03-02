@@ -1,3 +1,4 @@
+import config from './config';
 import { isCombinedSlice, isSliceMap } from './buildSlice';
 import { createSlice, Dispatch, PayloadAction, Slice } from '@reduxjs/toolkit';
 import {
@@ -91,7 +92,7 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
                         payload: action.payload.data
                     });
 
-                    if (!(import.meta as any).env.PROD) {
+                    if (config.debug) {
                         console.log(`sliceMap\t ${name}`);
                         console.log(response);
                     }

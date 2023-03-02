@@ -1,3 +1,4 @@
+import config from './config';
 import {
     AggregateBuildSlices,
     CaseReducerFromState,
@@ -29,7 +30,7 @@ const buildSimpleSlice = <State, Name extends string>(
         initialState,
         reducers: {
             set: (_, { payload }) => {
-                if (!(import.meta as any).env.PROD) {
+                if (config.debug) {
                     console.log(`simpleSlice\t\t ${name}`);
                     console.log(payload);
                 }
@@ -111,7 +112,7 @@ const combineBuildSlices = <
                             action
                         );
 
-                        if (!(import.meta as any).env.PROD) {
+                        if (config.debug) {
                             console.log(`combinedSlice\t\t ${name}`);
                             console.log(response);
                         }
