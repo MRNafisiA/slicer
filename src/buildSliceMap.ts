@@ -94,7 +94,7 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
 
                     if (config.debug) {
                         console.log(`sliceMap\t ${name}`);
-                        console.log(response);
+                        console.log(JSON.parse(JSON.stringify(response) ?? null));
                     }
                     return response;
                 }
