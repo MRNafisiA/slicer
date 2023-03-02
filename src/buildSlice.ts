@@ -28,7 +28,12 @@ const buildSimpleSlice = <State, Name extends string>(
         name,
         initialState,
         reducers: {
-            set: (_, { payload }) => payload
+            set: (_, { payload }) => {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log(`simpleSlice(${name}) -> ${JSON.stringify(payload)}`);
+                }
+                return payload;
+            }
         }
     }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
 const buildSlice = <State extends Record<string, unknown>, Name extends string>(
@@ -94,7 +99,7 @@ const combineBuildSlices = <
                     ({ type }) => type.startsWith(`${name}/${key}`),
                     (state, action) => {
                         const baseSlice = subSlices[key];
-                        return (isCombinedSlice(baseSlice)
+                        const response = (isCombinedSlice(baseSlice)
                             ? baseSlice.rootSlice.reducer
                             : isSliceMap(baseSlice)
                                 ? baseSlice.slice.reducer
@@ -104,6 +109,11 @@ const combineBuildSlices = <
                             state[key],
                             action
                         );
+
+                        if (process.env.NODE_ENV !== 'production') {
+                            console.log(`combinedSlice(${name}) -> ${JSON.stringify(response)}`);
+                        }
+                        return response;
                     }
                 );
             }
