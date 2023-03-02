@@ -32,7 +32,9 @@ const buildSimpleSlice = <State, Name extends string>(
             set: (_, { payload }) => {
                 if (config.debug) {
                     console.log(`simpleSlice\t\t ${name}`);
+                    console.log('next-state:');
                     console.log(JSON.parse(JSON.stringify(payload) ?? null));
+                    console.log('---- ----');
                 }
                 return payload;
             }
@@ -114,7 +116,11 @@ const combineBuildSlices = <
 
                         if (config.debug) {
                             console.log(`combinedSlice\t\t ${name}`);
+                            console.log('action:');
+                            console.log(JSON.parse(JSON.stringify(action) ?? null));
+                            console.log('next-state:');
                             console.log(JSON.parse(JSON.stringify(response) ?? null));
+                            console.log('---- ----');
                         }
                         return response;
                     }
