@@ -18,15 +18,15 @@ type SliceMap<State extends Record<string, unknown> = any> = {
         dispatch: Dispatch;
     } & (
         | {
-              actions: Slice['actions'];
-          }
+        actions: Slice['actions'];
+    }
         | {
-              slices: CombinedSlice;
-          }
+        slices: CombinedSlice;
+    }
         | {
-              sliceMap: SliceMap;
-          }
-    );
+        sliceMap: SliceMap;
+    }
+        );
 };
 type AggregateBuildSlices<
     BuildSlices extends {
@@ -67,10 +67,10 @@ type GetStateFromSliceOrCombinedSliceOrSliceMap<
 > = A extends Slice<infer U>
     ? U
     : A extends CombinedSlice<infer U>
-    ? U
-    : A extends SliceMap<infer U>
-    ? SliceMapState<U>
-    : never;
+        ? U
+        : A extends SliceMap<infer U>
+            ? SliceMapState<U>
+            : never;
 
 export type {
     CaseReducerFromState,

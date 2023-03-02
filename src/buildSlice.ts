@@ -28,9 +28,7 @@ const buildSimpleSlice = <State, Name extends string>(
         name,
         initialState,
         reducers: {
-            set: (_state, {payload}) => {
-                _state = payload as any
-            }
+            set: (_, { payload }) => payload
         }
     }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
 const buildSlice = <State extends Record<string, unknown>, Name extends string>(
@@ -47,7 +45,7 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
                     : initialState
             ).map(key => [
                 key,
-                (state, {payload}) => {
+                (state, { payload }) => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     state[key] = payload;
@@ -93,10 +91,10 @@ const combineBuildSlices = <
         extraReducers: builder => {
             for (const key in subSlices) {
                 builder.addMatcher(
-                    ({type}) => type.startsWith(`${name}/${key}`),
+                    ({ type }) => type.startsWith(`${name}/${key}`),
                     (state, action) => {
                         const baseSlice = subSlices[key];
-                        (isCombinedSlice(baseSlice)
+                        return (isCombinedSlice(baseSlice)
                             ? baseSlice.rootSlice.reducer
                             : isSliceMap(baseSlice)
                                 ? baseSlice.slice.reducer
@@ -111,8 +109,8 @@ const combineBuildSlices = <
             }
         }
     });
-    return {rootSlice, subSlices};
+    return { rootSlice, subSlices };
 };
 
-export {isCombinedSlice, isSliceMap};
-export {buildSimpleSlice, buildSlice, combineBuildSlices};
+export { isCombinedSlice, isSliceMap };
+export { buildSimpleSlice, buildSlice, combineBuildSlices };
