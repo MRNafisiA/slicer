@@ -92,7 +92,7 @@ const combineBuildSlices = <
                         const baseSlice = subSlices[key];
                         return {
                             ...state as AggregateBuildSlices<BuildSlices>,
-                            key: (isCombinedSlice(baseSlice)
+                            [key]: (isCombinedSlice(baseSlice)
                                 ? baseSlice.rootSlice.reducer
                                 : isSliceMap(baseSlice)
                                     ? baseSlice.slice.reducer
