@@ -1,4 +1,3 @@
-import config from './config';
 import { isCombinedSlice, isSliceMap } from './buildSlice';
 import { createSlice, Dispatch, PayloadAction, Slice } from '@reduxjs/toolkit';
 import {
@@ -53,56 +52,40 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
         initialState: { order: Object.keys(initialState), map: initialState },
         reducers: {
             add: (
-                state,
+                { order, map },
                 {
                     payload: { id, initialState = rootSlice.getInitialState() }
                 }: PayloadAction<{
                     id: string;
                     initialState?: GetStateFromSliceOrCombinedSliceOrSliceMap<S>;
                 }>
-            ) => {
-                state.map[id] = initialState as any;
-                if (!state.order.includes(id)) {
-                    state.order.push(id);
-                }
-            },
-            remove: (state, { payload: id }: PayloadAction<string>) => {
-                delete state.map[id];
-                state.order.splice(state.order.indexOf(id), 1);
-            },
-            keep: (state, { payload: ids }: PayloadAction<string[]>) => {
-                const removingIDs = Object.keys(state).filter(
-                    v => !ids.includes(v)
-                );
-                for (const id of removingIDs) {
-                    delete state.map[id];
-                }
-                state.order = state.order.filter(v => !removingIDs.includes(v));
-            },
-            setOrder: (state, { payload: ids }: PayloadAction<string[]>) => {
-                state.order = ids;
-            }
+            ) => ({
+                order: order.includes(id) ? order : [...order, id],
+                map: { ...map, [id as any]: initialState }
+            }),
+            remove: ({ order, map }, { payload: id }: PayloadAction<string>) => ({
+                order: order
+                    .filter(v => v !== id),
+                map: Object.fromEntries(Object.entries(map).filter(([key]) => key !== id))
+            }),
+            keep: ({ order, map }, { payload: ids }: PayloadAction<string[]>) => ({
+                order: order.filter(v => ids.includes(v)),
+                map: Object.fromEntries(Object.entries(map).filter(([key]) => ids.includes(key)))
+            }),
+            setOrder: ({ map }, { payload: ids }: PayloadAction<string[]>) => ({ order: ids, map })
         },
         extraReducers: builder =>
             builder.addMatcher(
                 action => action.type.startsWith(sliceName),
-                (state, action) => {
-                    if (config.debug) {
-                        console.log(`<- sliceMap\t\t ${name}`);
-                        console.log('action:');
-                        console.log(JSON.parse(JSON.stringify(action) ?? null));
+                ({ order, map }, action) => ({
+                    order, map: {
+                        ...map,
+                        [action.payload.id]: rootSlice.reducer(map[action.payload.id] as any, {
+                            type: action.type,
+                            payload: action.payload.data
+                        })
                     }
-                    const response = rootSlice.reducer(state.map[action.payload.id] as any, {
-                        type: action.type,
-                        payload: action.payload.data
-                    });
-                    if (config.debug) {
-                        console.log('next state:');
-                        console.log(JSON.parse(JSON.stringify(response) ?? null));
-                        console.log(`-> sliceMap\t\t ${name}`);
-                    }
-                    return response;
-                }
+                })
             )
     });
 
