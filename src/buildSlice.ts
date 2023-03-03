@@ -45,7 +45,7 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
                     : initialState
             ).map(key => [
                 key,
-                (state, { payload }) => ({ ...state, key: payload })
+                (state, { payload }) => ({ ...state, [key]: payload })
             ])
         )
     }) as Slice<State, CaseReducerFromState<State>, Name>;
