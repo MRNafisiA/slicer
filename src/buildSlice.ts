@@ -29,14 +29,14 @@ const buildSimpleSlice = <State, Name extends string>(
         name,
         initialState,
         reducers: {
-            set: (_, { payload }) => {
+            set: (_, action) => {
                 if (config.debug) {
-                    console.log(`simpleSlice\t\t ${name}`);
-                    console.log('next-state:');
-                    console.log(JSON.parse(JSON.stringify(payload) ?? null));
-                    console.log('---- ----');
+                    console.log(`<- simpleSlice\t\t ${name}`);
+                    console.log('action:');
+                    console.log(JSON.parse(JSON.stringify(action) ?? null));
+                    console.log(`-> simpleSlice\t\t ${name}`);
                 }
-                return payload;
+                return action.payload;
             }
         }
     }) as Slice<State, { set: CaseReducer<State, PayloadAction<State>> }, Name>;
@@ -54,10 +54,16 @@ const buildSlice = <State extends Record<string, unknown>, Name extends string>(
                     : initialState
             ).map(key => [
                 key,
-                (state, { payload }) => {
+                (state, action) => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    state[key] = payload;
+                    state[key] = action.payload;
+                    if (config.debug) {
+                        console.log(`<- buildSlice\t\t ${name}`);
+                        console.log('action:');
+                        console.log(JSON.parse(JSON.stringify(action) ?? null));
+                        console.log(`-> buildSlice\t\t ${name}`);
+                    }
                 }
             ])
         )
@@ -98,6 +104,9 @@ const combineBuildSlices = <
         ) as AggregateBuildSlices<BuildSlices>,
         reducers: {},
         extraReducers: builder => {
+            if (config.debug) {
+                console.log(`<- combinedSlice\t ${name}`);
+            }
             for (const key in subSlices) {
                 builder.addMatcher(
                     ({ type }) => type.startsWith(`${name}/${key}`),
@@ -115,12 +124,11 @@ const combineBuildSlices = <
                         );
 
                         if (config.debug) {
-                            console.log(`combinedSlice\t\t ${name}`);
                             console.log('action:');
                             console.log(JSON.parse(JSON.stringify(action) ?? null));
-                            console.log('next-state:');
+                            console.log('next state:');
                             console.log(JSON.parse(JSON.stringify(response) ?? null));
-                            console.log('---- ----');
+                            console.log(`-> combinedSlice\t ${name}`);
                         }
                         return response;
                     }

@@ -87,18 +87,19 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
             builder.addMatcher(
                 action => action.type.startsWith(sliceName),
                 (state, action) => {
+                    if (config.debug) {
+                        console.log(`<- sliceMap\t\t ${name}`);
+                        console.log('action:');
+                        console.log(JSON.parse(JSON.stringify(action) ?? null));
+                    }
                     const response = rootSlice.reducer(state.map[action.payload.id] as any, {
                         type: action.type,
                         payload: action.payload.data
                     });
-
                     if (config.debug) {
-                        console.log(`sliceMap\t ${name}`);
-                        console.log('action:');
-                        console.log(JSON.parse(JSON.stringify(action) ?? null));
-                        console.log('next-state:');
+                        console.log('next state:');
                         console.log(JSON.parse(JSON.stringify(response) ?? null));
-                        console.log('---- ----');
+                        console.log(`-> sliceMap\t\t ${name}`);
                     }
                     return response;
                 }
