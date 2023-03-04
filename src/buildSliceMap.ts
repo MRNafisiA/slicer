@@ -77,12 +77,12 @@ const buildSliceMap = <S extends Slice | CombinedSlice | SliceMap>(
         extraReducers: builder =>
             builder.addMatcher(
                 action => action.type.startsWith(sliceName),
-                ({ order, map }, action) => ({
+                ({ order, map }, { type, payload: { id, data } }) => ({
                     order, map: {
                         ...map,
-                        [action.payload.id]: rootSlice.reducer(map[action.payload.id] as any, {
-                            type: action.type,
-                            payload: action.payload.data
+                        [id]: rootSlice.reducer(map[id] as any, {
+                            type,
+                            payload: data
                         })
                     }
                 })
